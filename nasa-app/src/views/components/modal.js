@@ -38,9 +38,6 @@ const styles = theme => ({
 class CurrentImageModal extends React.Component {
   state = { expanded: false };
 
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
-  };
   handleClose = (e)=>{
       e.preventDefault();
       this.props.handleClose();

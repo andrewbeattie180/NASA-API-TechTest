@@ -34,6 +34,7 @@ class TitlebarGridList extends React.Component{
 
   handleClick = (event)=>{
     event.preventDefault();
+    console.log(event.target.tagName)
     let json = event.target.value
     console.log(json)
     this.props.handleImageClick(json);
@@ -56,8 +57,8 @@ class TitlebarGridList extends React.Component{
               title={tile.data[0].title}
               subtitle={<span>by: {tile.data[0].photographer?tile.data[0].photographer:'NASA'}</span>}
               actionIcon={
-                <IconButton className={classes.icon} onClick = {this.handleClick} value = {JSON.stringify(tile)}>
-                  <InfoIcon onClick = {(event)=>{event.stopPropagation()}} />
+                <IconButton className={classes.icon + " searchIcon"} onClick = {this.handleClick} value = {JSON.stringify(tile)}>
+                  <InfoIcon onClick = {(e)=>{e.preventDefault(); e.stopPropagation()}} />
                 </IconButton>
               }
             /> 

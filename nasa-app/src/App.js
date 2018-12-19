@@ -14,11 +14,12 @@ class App extends Component {
   this.state={
     title:"NASA Image & Video Search",
     loading:false,
-    imageDisplayed:false,
     images:[],
     searchInput:"",
     imagesChecked:true,
-    videoChecked:false
+    imageDisplayed:false,
+    videoChecked:false,
+    videoLoading:false
   }
 }
 componentDidMount=()=>{
@@ -31,12 +32,11 @@ handleImageClick = (input)=>{
   let imageDescription = json.data[0].description;
   let imageTitle = json.data[0].title;
   let imageDate = json.data[0].date_created;
-  API.dataReturn(dataID).then(
   
   this.setState({
     imageDisplayed:true,
     currentImage:[dataID,image,imageDescription,imageTitle,imageDate]
-  }))
+  })
 }
 handleClose = ()=>{
   this.setState({
@@ -89,6 +89,7 @@ handleToggle = (name,status)=>{
         {this.state.imageDisplayed?<CurrentImageModal 
           handleClose = {this.handleClose}
           currentImage = {this.state.currentImage}/> : null}
+        {this.state.videoLoading?<Loading />:null}
       </div>
     )
   }

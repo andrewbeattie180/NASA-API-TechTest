@@ -22,7 +22,7 @@ const API ={
     return fetch(apiURL)
             .then(response => response.json())
             .then(result =>{
-                console.log(result.collection.items);
+                console.log(result);
                 return result.collection.items
             })
   },
