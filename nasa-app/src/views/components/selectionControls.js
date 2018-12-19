@@ -29,12 +29,12 @@ handleChange = (name) => (e)=>{
           control={
             <Switch
               checked={this.props.audioChecked}
-              onChange={this.handleChange('audioChecked')}
-              value="audioChecked"
+              onChange={this.handleChange('videoChecked')}
+              value="videoChecked"
               color="primary"
             />
           }
-          label="Audio"
+          label="Video"
         />
       </FormGroup>
     );

@@ -18,47 +18,50 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    width: 600,
+    width: 1000,
     height: 450,
   },
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
+  
 });
 
 
 
  
 class TitlebarGridList extends React.Component{ 
-    componentDidMount=()=>{
-        this.forceUpdate();
-      }
 
+  handleClick = (event)=>{
+    event.preventDefault();
+    let json = event.target.value
+    console.log(json)
+    this.props.handleImageClick(json);
+  }
     render(){
-  const { classes } = this.props;
-  const tileData = this.props.tileData;
+      const{classes} = this.props;
+      const tileData = this.props.tileData;
 
-
- 
   return (
     <div className={classes.root}>
-      <GridList cellHeight={200} className={classes.gridList}>
-        <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-          <ListSubheader component="div">Images</ListSubheader>
+      <GridList cellHeight={200} className={classes.gridList} cols={4}>
+        <GridListTile key="Subheader" cols={4}  style={{ height: 'auto' }}>
+          <ListSubheader component="div">{tileData.length>0?<p>Images</p>:null}</ListSubheader>
         </GridListTile>
         {tileData.map(tile => (
-          <GridListTile key={tile.img}>
-            <img src={tile.img} alt={tile.title} />
+          tile.data[0].media_type === 'image'?
+          <GridListTile key={tile.data[0].nasa_id} >
+            <img src={tile.links[0].href} alt={tile.data[0].title} />
             <GridListTileBar
-              title={tile.title}
-            //   subtitle={<span>by: {tile.author}</span>}
+              title={tile.data[0].title}
+              subtitle={<span>by: {tile.data[0].photographer?tile.data[0].photographer:'NASA'}</span>}
               actionIcon={
-                <IconButton className={classes.icon}>
-                  <InfoIcon />
+                <IconButton className={classes.icon} onClick = {this.handleClick} value = {JSON.stringify(tile)}>
+                  <InfoIcon onClick = {(event)=>{event.stopPropagation()}} />
                 </IconButton>
               }
-            />
-          </GridListTile>
+            /> 
+          </GridListTile>:null
         ))}
       </GridList>
     </div>

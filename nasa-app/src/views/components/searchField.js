@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import SwitchLabels from './selectionControls';
 import ReactDOM from 'react-dom';
 import FormControl from '@material-ui/core/FormControl';
-
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
@@ -34,23 +33,29 @@ const styles = theme => ({
 
 class OutlinedTextFields extends React.Component {
 
-    componentDidMount() {
+  componentDidMount() {
     this.forceUpdate();
   }
 
   textChange = (e) => {
     e.preventDefault();
-    let textInput = e.target.value.toLowerCase();
+    let textInput = e.target.value;
     this.props.handleChange(textInput);
   };
-
+  submitSearch =(e)=> {
+    e.preventDefault();
+    this.props.handleSubmit();
+    e.currentTarget.reset();
+  }
   render() {
     const { classes } = this.props;
 
     return (
       <div className = 'mainInputForm'>
       <form className={classes.container}
-      noValidate autoComplete="off" >
+      noValidate autoComplete="off" 
+      onSubmit = {this.submitSearch}
+      >
         
         <FormControl className={classes.formControl} variant="outlined">
           <InputLabel
@@ -64,18 +69,18 @@ class OutlinedTextFields extends React.Component {
           <OutlinedInput
             id="component-outlined"
             value={classes.inputText}
-            onChange={this.textChange}
+            onChange={(event)=> this.textChange(event)}
+            type = 'text'
             labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
           />
         </FormControl>
 
         </form>
         <SwitchLabels 
-        imagesChecked = {this.props.imagesChecked}
-        audioChecked = {this.props.audioChecked}
-        handleToggle = {this.props.handleToggle}/>
+            imagesChecked = {this.props.imagesChecked}
+            audioChecked = {this.props.audioChecked}
+            handleToggle = {this.props.handleToggle}/>
       </div>
-     
     );
   }
 }

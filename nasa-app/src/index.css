@@ -12,3 +12,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+p{
+  font-size: 2em;
+  color:#000;
+}
+
+.modal{
+  position: absolute;
+  width:700px;
+  top:15%;
+  left:50%;
+  transform: translateX(-350px)
+}

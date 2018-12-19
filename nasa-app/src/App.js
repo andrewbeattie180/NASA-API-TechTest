@@ -1,86 +1,66 @@
 import React, { Component } from 'react';
 import OutlinedTextFields from './views/components/searchField';
-import TitlebarGridList from './views/components/titleGridList'
+import TitlebarGridList from './views/components/titleGridList';
+import Loading from './views/components/loading'
+import CurrentImageModal from './views/components/modal'
 import './App.css';
-
-
-const request = require('request');
-const imageArray = [];
-
-const getAPI = url => {
-  request(url, { json: true }, (err, res, body) => {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("statusCode:", res && res.statusCode);
-    let length =
-      body.collection.items.length < 12 ? body.collection.items.length :12 ;
-    for (let i = 0; i < length; i++) {
-      if (body.collection.items[i].data[0].media_type === "image") {
-        imageArray[i] = {
-          img: body.collection.items[i].links[0].href,
-          title: body.collection.items[i].data[0].title,
-          description: body.collection
-        };
-      }
-    }
-    return imageArray;
-  }, () =>{});
-};
-
-
-
-
-function createURL(searchParameter, imageToggle,audioToggle){
-
-  if (typeof searchParameter !== 'string'){
-    searchParameter = searchParameter.toString();
-  }
-  const urlRoot = 'https://images-api.nasa.gov/search?q='
-  const urlMediaDescription = '&media_type='
-  let mediaType;
-  if (imageToggle && !audioToggle){
-    mediaType = 'image'
-  } else if (!imageToggle && audioToggle){
-    mediaType = 'audio'
-  } else {
-    mediaType = 'image,audio'
-  }
-
-  let apiURL= urlRoot + searchParameter + urlMediaDescription + mediaType;
-  return apiURL;
-}
+import API from './views/api'
 
 
 class App extends Component {
-  state={
-    noImages:true,
+  constructor(){
+    super();
+  
+  this.state={
+    title:"NASA Image & Video Search",
+    loading:false,
+    imageDisplayed:false,
     images:[],
     searchInput:"",
     imagesChecked:true,
-    audioChecked:false
+    videoChecked:false
   }
-imageArray = this.state.images
-
+}
 componentDidMount=()=>{
    this.forceUpdate();
  }
-
-
-handleCreateSearch = async()=>{
-  let url = createURL(this.state.searchInput,this.state.imagesChecked,this.state.audioChecked)
-  getAPI(url)
-  this.setState(prevState=>({
-    images: prevState.imageArray = imageArray,
-    noImages: false
-  }))
+handleImageClick = (input)=>{
+  let json = JSON.parse(input)
+  let dataID = json.data[0].nasa_id;
+  let image = json.links[0].href;
+  let imageDescription = json.data[0].description;
+  let imageTitle = json.data[0].title;
+  let imageDate = json.data[0].date_created;
+  API.dataReturn(dataID).then(
   
+  this.setState({
+    imageDisplayed:true,
+    currentImage:[dataID,image,imageDescription,imageTitle,imageDate]
+  }))
+}
+handleClose = ()=>{
+  this.setState({
+    imageDisplayed: false
+  })
+}
+
+handleCreateSearch = ()=>{
+  this.setState({
+    loading:true
+  })
+ API.search(this.state.searchInput,this.state.imagesChecked,this.state.videoChecked)
+    .then(images =>{
+      this.setState({
+        images,
+        loading: false
+      })
+    });
 }
 
 handleInputChange = (input)=>{
   this.setState({
     searchInput:input
-  },this.handleCreateSearch)
+  })
 }
 
 handleToggle = (name,status)=>{
@@ -93,20 +73,26 @@ handleToggle = (name,status)=>{
     return (
       <div className="App">
       <h1>
-        NASA Image Search
+        {this.state.title}
       </h1>
         <OutlinedTextFields 
           handleChange = {this.handleInputChange}
+          handleSubmit = {this.handleCreateSearch}
           searchInput = {this.searchInput}
           imagesChecked = {this.state.imagesChecked}
-          audioChecked = {this.state.audioChecked}
+          videoChecked = {this.state.videoChecked}
           handleToggle = {this.handleToggle}
           />
-        {this.state.noImages? null:<TitlebarGridList
-          tileData = {this.state.images} />}
+        {this.state.loading? <Loading />:!this.state.imageDisplayed?<TitlebarGridList
+          tileData = {this.state.images}
+          handleImageClick = {this.handleImageClick} />:null}
+        {this.state.imageDisplayed?<CurrentImageModal 
+          handleClose = {this.handleClose}
+          currentImage = {this.state.currentImage}/> : null}
       </div>
-    );
+    )
   }
 }
+
 
 export default App;
