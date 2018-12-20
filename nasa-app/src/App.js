@@ -5,6 +5,7 @@ import Loading from './views/components/loading'
 import CurrentImageModal from './views/components/modal'
 import './App.css';
 import API from './views/api'
+import VideoGridList from './views/components/videoGridList';
 
 
 class App extends Component {
@@ -19,7 +20,8 @@ class App extends Component {
     imagesChecked:true,
     imageDisplayed:false,
     videoChecked:false,
-    videoLoading:false
+    videoLoading:false,
+    videoDisplayed:false
   }
 }
 componentDidMount=()=>{
@@ -32,7 +34,6 @@ handleImageClick = (input)=>{
   let imageDescription = json.data[0].description;
   let imageTitle = json.data[0].title;
   let imageDate = json.data[0].date_created;
-  
   this.setState({
     imageDisplayed:true,
     currentImage:[dataID,image,imageDescription,imageTitle,imageDate]
@@ -43,18 +44,28 @@ handleClose = ()=>{
     imageDisplayed: false
   })
 }
+handleMedia = (dataID) =>{
+  API.dataReturn(dataID)
+    .then(videos =>{
+      this.setState({
+      videos
+      })
+    })
+}
 
 handleCreateSearch = ()=>{
   this.setState({
-    loading:true
+    loading:true,
+    videoLoading:true,
   })
  API.search(this.state.searchInput,this.state.imagesChecked,this.state.videoChecked)
     .then(images =>{
       this.setState({
         images,
-        loading: false
+        loading: false,
       })
-    });
+    })
+  
 }
 
 handleInputChange = (input)=>{
@@ -89,7 +100,10 @@ handleToggle = (name,status)=>{
         {this.state.imageDisplayed?<CurrentImageModal 
           handleClose = {this.handleClose}
           currentImage = {this.state.currentImage}/> : null}
-        {this.state.videoLoading?<Loading />:null}
+        {this.state.videoLoading?<Loading />:!this.state.videoDisplayed?<VideoGridList
+          tileData = {this.state.images}
+          handleMedia = {this.handleMedia}
+          /> : null}
       </div>
     )
   }
