@@ -22,7 +22,7 @@ const API ={
     return fetch(apiURL)
             .then(response => response.json())
             .then(result =>{
-                console.log(result);
+                // console.log(result);
                 return result.collection.items
             })
   },
@@ -32,8 +32,8 @@ const API ={
     return fetch(urlRoot)
             .then(response =>response.json())
             .then(result =>{
-              console.log(result.collection)
-              return result.collection
+              // console.log(result.collection.items)
+              return result.collection.items
             })
   }
 }

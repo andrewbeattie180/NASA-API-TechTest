@@ -34,9 +34,9 @@ class TitlebarGridList extends React.Component{
 
   handleClick = (event)=>{
     event.preventDefault();
-    console.log(event.target.tagName)
+    // console.log(event.target.tagName)
     let json = event.target.value
-    console.log(json)
+    // console.log(json)
     this.props.handleImageClick(json);
   }
     render(){

@@ -5,7 +5,7 @@ import Loading from './views/components/loading'
 import CurrentImageModal from './views/components/modal'
 import './App.css';
 import API from './views/api'
-import VideoGridList from './views/components/videoGridList';
+// import VideoGridList from './views/components/videoGridList';
 
 
 class App extends Component {
@@ -19,6 +19,7 @@ class App extends Component {
     searchInput:"",
     imagesChecked:true,
     imageDisplayed:false,
+    videos:[],
     videoChecked:false,
     videoLoading:false,
     videoDisplayed:false
@@ -44,7 +45,8 @@ handleClose = ()=>{
     imageDisplayed: false
   })
 }
-handleMedia = (dataID) =>{
+
+handleMedia = (dataID) =>{ //returns data based on nasa data ID
   API.dataReturn(dataID)
     .then(videos =>{
       this.setState({
@@ -56,17 +58,27 @@ handleMedia = (dataID) =>{
 handleCreateSearch = ()=>{
   this.setState({
     loading:true,
-    videoLoading:true,
+    // videoLoading:true,
   })
  API.search(this.state.searchInput,this.state.imagesChecked,this.state.videoChecked)
     .then(images =>{
       this.setState({
         images,
         loading: false,
-      })
+      }) 
+      // this.state.images.map(image =>{
+      //   this.setState(prevState =>{
+      //     prevState.videos.push(API.dataReturn(image.data[0].nasa_id))
+      //   })
+      // })
+      // .then(
+      //   this.setState({
+      //     videoLoading:false
+      //   })
+      // )
     })
-  
 }
+
 
 handleInputChange = (input)=>{
   this.setState({
@@ -78,7 +90,7 @@ handleToggle = (name,status)=>{
   this.setState({
     [name]: status
   }
-  )};
+)};
 
   render() {
     return (
@@ -94,16 +106,26 @@ handleToggle = (name,status)=>{
           videoChecked = {this.state.videoChecked}
           handleToggle = {this.handleToggle}
           />
-        {this.state.loading? <Loading />:!this.state.imageDisplayed?<TitlebarGridList
+        {this.state.loading? 
+        <Loading />
+        : !this.state.imageDisplayed?
+        <TitlebarGridList
           tileData = {this.state.images}
-          handleImageClick = {this.handleImageClick} />:null}
-        {this.state.imageDisplayed?<CurrentImageModal 
+          handleImageClick = {this.handleImageClick} />
+          : null}
+        {this.state.imageDisplayed?
+        <CurrentImageModal 
           handleClose = {this.handleClose}
-          currentImage = {this.state.currentImage}/> : null}
-        {this.state.videoLoading?<Loading />:!this.state.videoDisplayed?<VideoGridList
+          currentImage = {this.state.currentImage}/> 
+          : null}
+        {/* {this.state.videoLoading?
+        <Loading />:
+        !this.state.videoDisplayed?
+        <VideoGridList
           tileData = {this.state.images}
-          handleMedia = {this.handleMedia}
-          /> : null}
+          videoData = {this.state.videos}
+          handleMedia = {this.handleMedia}/> 
+          : null} */}
       </div>
     )
   }

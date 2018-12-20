@@ -15,3 +15,6 @@ Aims:
 4- When an image is clicked on, the full image is shown along with a description (this can be taken from the API) (DONE)
 5- Create a function that can return other media than Images (audio/video)
 
+Step 5 - I have method that will return the requested JSON using the nasa_id of the required asset. I am currently attempting to map over the state where media_type is video so I can render a section that contains the videos.
+
+
